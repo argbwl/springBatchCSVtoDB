@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<import resource="persist.xml"/>
+
+	<!-- ItemWriter which writes data to database -->
+	<bean id="databaseItemWriter"
+		class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<property name="dataSource" ref="ds" />
+		<property name="sql">
+			<value>
+	            <![CDATA[        
+	            	INSERT INTO BANK VALUES (?,?,?,?)
+	            ]]>
+			</value>
+		</property>
+		<!-- We need a custom setter to set values to Query param by getting values Bank object -->
+		<property name="itemPreparedStatementSetter">
+			<bean
+				class="com.ab.batch.writer.BankItemPSSetter" />
+		</property>
+	</bean>
+	
+</beans>
